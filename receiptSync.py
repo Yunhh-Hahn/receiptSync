@@ -13,18 +13,6 @@ def lenColumn(worksheet: object):
     colLength = len(colList)
     return colLength
 
-def insertBudgetWeek(worksheet: object) -> None:
-    colLength = lenColumn(worksheet)
-
-    lastWeek_Day = getLast_budgetDay(worksheet)
-    startDay = getDateTimeobject(lastWeek_Day) + datetime.timedelta(days=1)
-    # A week have 7 day with the start day being 1 so plus 6 to get lastday
-    lastDay = getNext_lastDay(startDay)
-    weekRange = getSheet_timeFormat(startDay) + " - " + getSheet_timeFormat(lastDay)
-
-    worksheet.update_acell(f"A{colLength + 1}", weekRange)
-
-
 def insertReceipt(worksheet: object, receiptTotal: float)-> None :
     colLength = lenColumn(worksheet)
     # today = getToday()
@@ -78,7 +66,7 @@ class ExpenseManager:
                 endDay = endDay + datetime.timedelta(days=7)
             
         weekRange = self.getSheet_timeFormat(startDay) + " - " + self.getSheet_timeFormat(endDay)
-        
+        self.worksheet.update_cell(dateCell.row,colLength, weekRange)
     
 
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
