@@ -148,8 +148,9 @@ dmypy.json
 # Google credentials
 credentials.json
 
-# test file
-test.py
+# test repositiory
+test
+
 # Pyre type checker
 .pyre/
 
