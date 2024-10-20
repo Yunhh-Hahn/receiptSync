@@ -53,12 +53,13 @@ class Receipt:
 
 
 class ExpenseManager:
-    def __init__(self, worksheet, receipt: Receipt, rent: int, phonePlan: int, others) -> None:
+    def __init__(self, worksheet, receipt: Receipt, rent: int, phonePlan: int, others, time_format = "%d/%m/%Y") -> None:
         self.worksheet = worksheet
         self.rent = rent
         self.receipt = receipt
         self.phonePlan = phonePlan
         self.others = others
+        self.time_format = time_format
     def insertBugdetWeek():
         today = datetime.today()
 
@@ -68,11 +69,14 @@ class ExpenseManager:
         lastSheetDay = getDateTimeobject(week[13:])
 
         if (today > lastSheetDay):
-            startWeek = lastSheetDay +  datetime.timedelta(days=1)
-            # Last day of recording to the sheet is more than 1 weeks behind
-            while(today > startWeek):
-                startWeek = startWeek + datetime.timedelta(days=6)
+            startDay = lastSheetDay +  datetime.timedelta(days=1)
+            endDay = startDay + datetime.timedelta(day=6)
+            # Edge case: Last day of recording to the sheet is more than 1 weeks behind
+            while(today > endDay):
+                startDay = startDay + datetime.timedelta(days=7)
+                endDay = endDay + datetime.timedelta(days=7)
 
+        weekRange = getSheet_dayFormat(startDay) + " - " + getSheet_dayFormat(endDay)
     
 
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
