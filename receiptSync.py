@@ -1,33 +1,31 @@
 from OCR_endSum import getTotalValue
 import datetime
 import gspread
+import calendar
 from google.oauth2.service_account import Credentials
 
-def getDateTimeobject(date: str) -> object:
-    format = '%d/%m/%Y'
-    dateObject = datetime.datetime.strptime(date, format)
-    return dateObject
+
 
 def lenColumn(worksheet: object):
     colList = worksheet.col_values(1)
     colLength = len(colList)
     return colLength
 
-def insertReceipt(worksheet: object, receiptTotal: float)-> None :
-    colLength = lenColumn(worksheet)
-    # today = getToday()
-    # week = getLast_budgetDay(worksheet)
+# def insertReceipt(worksheet: object, receiptTotal: float)-> None :
+#     colLength = lenColumn(worksheet)
+#     # today = getToday()
+#     # week = getLast_budgetDay(worksheet)
 
-    # if ((getDateTimeobject(today) <= getDateTimeobject(week)) == True):
-    if (isNextWeek() == False):
-        val = worksheet.acell(f"J{colLength}").value
-        if val == None:
-            val = 0
+#     # if ((getDateTimeobject(today) <= getDateTimeobject(week)) == True):
+#     if (isNextWeek() == False):
+#         val = worksheet.acell(f"J{colLength}").value
+#         if val == None:
+#             val = 0
 
-        newVal = float(val) + receiptTotal   
-        worksheet.update_acell(f"J{colLength}", newVal)
-    else:
-        worksheet.update_acell(f"J{colLength + 1}", receiptTotal)
+#         newVal = float(val) + receiptTotal   
+#         worksheet.update_acell(f"J{colLength}", newVal)
+#     else:
+#         worksheet.update_acell(f"J{colLength + 1}", receiptTotal)
 
 
 class Receipt:
@@ -46,7 +44,11 @@ class ExpenseManager:
         self.others = others
         self.time_format = time_format
 
-    def getSheet_timeFormat(self, date: datetime):
+    def getDateTimeobject(self, date: str) -> object:
+        dateObject = datetime.datetime.strptime(date, self.time_format)
+        return dateObject
+    
+    def getSheet_timeFormat(self, date: datetime) -> str:
         return date.strftime(self.time_format)
 
     def insertBugdetWeek(self):
@@ -55,7 +57,7 @@ class ExpenseManager:
         dateCell = worksheet.find("Date")
         colLength = lenColumn(worksheet)
         week = worksheet.cell(dateCell.row, colLength)
-        lastSheetDay = getDateTimeobject(week[13:])
+        lastSheetDay = self.getDateTimeobject(week[13:])
 
         if (today > lastSheetDay):
             startDay = lastSheetDay +  datetime.timedelta(days=1)
