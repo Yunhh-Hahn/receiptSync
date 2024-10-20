@@ -8,9 +8,6 @@ def getDateTimeobject(date: str) -> object:
     dateObject = datetime.datetime.strptime(date, format)
     return dateObject
 
-def getSheet_dayFormat(date: object) -> object:
-    return date.strftime("%d/%m/%Y")
-
 def lenColumn(worksheet: object):
     colList = worksheet.col_values(1)
     colLength = len(colList)
@@ -23,7 +20,7 @@ def insertBudgetWeek(worksheet: object) -> None:
     startDay = getDateTimeobject(lastWeek_Day) + datetime.timedelta(days=1)
     # A week have 7 day with the start day being 1 so plus 6 to get lastday
     lastDay = getNext_lastDay(startDay)
-    weekRange = getSheet_dayFormat(startDay) + " - " + getSheet_dayFormat(lastDay)
+    weekRange = getSheet_timeFormat(startDay) + " - " + getSheet_timeFormat(lastDay)
 
     worksheet.update_acell(f"A{colLength + 1}", weekRange)
 
@@ -60,7 +57,11 @@ class ExpenseManager:
         self.phonePlan = phonePlan
         self.others = others
         self.time_format = time_format
-    def insertBugdetWeek():
+
+    def getSheet_timeFormat(self, date: datetime):
+        return date.strftime(self.time_format)
+
+    def insertBugdetWeek(self):
         today = datetime.today()
 
         dateCell = worksheet.find("Date")
@@ -70,13 +71,14 @@ class ExpenseManager:
 
         if (today > lastSheetDay):
             startDay = lastSheetDay +  datetime.timedelta(days=1)
-            endDay = startDay + datetime.timedelta(day=6)
+            endDay = startDay + datetime.timedelta(days=6)
             # Edge case: Last day of recording to the sheet is more than 1 weeks behind
             while(today > endDay):
                 startDay = startDay + datetime.timedelta(days=7)
                 endDay = endDay + datetime.timedelta(days=7)
-
-        weekRange = getSheet_dayFormat(startDay) + " - " + getSheet_dayFormat(endDay)
+            
+        weekRange = self.getSheet_timeFormat(startDay) + " - " + self.getSheet_timeFormat(endDay)
+        
     
 
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -92,6 +94,4 @@ worksheet = sheet.worksheet("Sheet1")
 photoPath = "20241007_230638.jpg"
 receiptTotal = getTotalValue(photoPath)
 
-if (isNextWeek() == True):
-    insertBudgetWeek(worksheet)
-insertReceipt(worksheet= worksheet, receiptTotal= receiptTotal)
+
