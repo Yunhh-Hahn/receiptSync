@@ -16,20 +16,23 @@ def lenColumn(worksheet: object):
     colLength = len(colList)
     return colLength
 
-def isNextWeek() -> bool:
-    today = getToday()
-    sheetWeek = getLast_budgetDay(worksheet)
+# def isNextWeek() -> bool:
+#     today = getToday()
+#     sheetWeek = getLast_budgetDay(worksheet)
 
-    return (getDateTimeobject(today) > getDateTimeobject(sheetWeek))
+#     return (getDateTimeobject(today) > getDateTimeobject(sheetWeek))
 
-def getToday():
-    date = datetime.datetime.today()
-    return getSheet_dayFormat(date)
+# def getToday():
+#     date = datetime.datetime.today()
+#     return getSheet_dayFormat(date)
 
+# Why did I do this, there is method that allow for me to get the value of only a single cell, in this shit, 
+# I have querried the entire column twice already ???
 def getBudgetWeek(worksheet: object)-> str:
-    colList = worksheet.col_values(1)
+    dateCell = worksheet.find("Date")
     colLength = lenColumn(worksheet)
-    week = colList[colLength - 1]
+
+    week = worksheet.cell(dateCell.row, colLength)
     return week
 
 def getLast_budgetDay(worksheet: object)-> str :
@@ -69,6 +72,31 @@ def insertReceipt(worksheet: object, receiptTotal: float)-> None :
     else:
         worksheet.update_acell(f"J{colLength + 1}", receiptTotal)
 
+
+class Receipt:
+    def __init__(self, total) -> None:
+        self.total = total
+    def __repr__(self) -> str:
+        return(f"Receipt(total={self.total})")
+
+
+class ExpenseManager:
+    def __init__(self, worksheet, receipt: Receipt, rent: int, phonePlan: int, others) -> None:
+        self.worksheet = worksheet
+        self.rent = rent
+        self.receipt = receipt
+        self.phonePlan = phonePlan
+        self.others = others
+        self.today = datetime.today()
+    def insertBugdetWeek():
+        today = datetime.today()
+
+        dateCell = worksheet.find("Date")
+        colLength = lenColumn(worksheet)
+        week = worksheet.cell(dateCell.row, colLength)
+        lastDay = week[13:]
+    
+
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
 
 creds = Credentials.from_service_account_file("./credentials.json", scopes=scopes)
@@ -81,18 +109,7 @@ worksheet = sheet.worksheet("Sheet1")
 
 photoPath = "20241007_230638.jpg"
 receiptTotal = getTotalValue(photoPath)
+
 if (isNextWeek() == True):
     insertBudgetWeek(worksheet)
 insertReceipt(worksheet= worksheet, receiptTotal= receiptTotal)
-
-
-class Receipt:
-    def __init__(self, total) -> None:
-        self.total = total
-    def __repr__(self) -> str:
-        return(f"Receipt(total={self.total})")
-
-
-class ExpenseSheet():
-    def __init__(self) -> None:
-        pass
