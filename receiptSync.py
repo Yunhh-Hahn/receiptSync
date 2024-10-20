@@ -16,34 +16,6 @@ def lenColumn(worksheet: object):
     colLength = len(colList)
     return colLength
 
-# def isNextWeek() -> bool:
-#     today = getToday()
-#     sheetWeek = getLast_budgetDay(worksheet)
-
-#     return (getDateTimeobject(today) > getDateTimeobject(sheetWeek))
-
-# def getToday():
-#     date = datetime.datetime.today()
-#     return getSheet_dayFormat(date)
-
-# Why did I do this, there is method that allow for me to get the value of only a single cell, in this shit, 
-# I have querried the entire column twice already ???
-def getBudgetWeek(worksheet: object)-> str:
-    dateCell = worksheet.find("Date")
-    colLength = lenColumn(worksheet)
-
-    week = worksheet.cell(dateCell.row, colLength)
-    return week
-
-def getLast_budgetDay(worksheet: object)-> str :
-    week = getBudgetWeek(worksheet)
-    lastDay = week[13:]
-    return lastDay
-
-def getNext_lastDay(startDay: object) -> object:
-    lastDay = startDay + datetime.timedelta(days=6)
-    return lastDay
-
 def insertBudgetWeek(worksheet: object) -> None:
     colLength = lenColumn(worksheet)
 
@@ -87,14 +59,20 @@ class ExpenseManager:
         self.receipt = receipt
         self.phonePlan = phonePlan
         self.others = others
-        self.today = datetime.today()
     def insertBugdetWeek():
         today = datetime.today()
 
         dateCell = worksheet.find("Date")
         colLength = lenColumn(worksheet)
         week = worksheet.cell(dateCell.row, colLength)
-        lastDay = week[13:]
+        lastSheetDay = getDateTimeobject(week[13:])
+
+        if (today > lastSheetDay):
+            startWeek = lastSheetDay +  datetime.timedelta(days=1)
+            # Last day of recording to the sheet is more than 1 weeks behind
+            while(today > startWeek):
+                startWeek = startWeek + datetime.timedelta(days=6)
+
     
 
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
