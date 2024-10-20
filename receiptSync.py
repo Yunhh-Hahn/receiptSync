@@ -4,12 +4,19 @@ import gspread
 import calendar
 from google.oauth2.service_account import Credentials
 
-
+# Utils function
 
 def lenColumn(worksheet: object):
     colList = worksheet.col_values(1)
     colLength = len(colList)
     return colLength
+
+def getDateTimeobject(date: str, time_format="%d/%m/%Y") -> object:
+    dateObject = datetime.datetime.strptime(date, time_format)
+    return dateObject
+
+def getSheet_timeFormat(date: datetime, time_format="%d/%m/%Y") -> str:
+    return date.strftime(time_format)
 
 # def insertReceipt(worksheet: object, receiptTotal: float)-> None :
 #     colLength = lenColumn(worksheet)
@@ -44,20 +51,13 @@ class ExpenseManager:
         self.others = others
         self.time_format = time_format
 
-    def getDateTimeobject(self, date: str) -> object:
-        dateObject = datetime.datetime.strptime(date, self.time_format)
-        return dateObject
-    
-    def getSheet_timeFormat(self, date: datetime) -> str:
-        return date.strftime(self.time_format)
-
     def insertBugdetWeek(self):
         today = datetime.today()
 
         dateCell = worksheet.find("Date")
         colLength = lenColumn(worksheet)
         week = worksheet.cell(dateCell.row, colLength)
-        lastSheetDay = self.getDateTimeobject(week[13:])
+        lastSheetDay = getDateTimeobject(week[13:], self.time_format)
 
         if (today > lastSheetDay):
             startDay = lastSheetDay +  datetime.timedelta(days=1)
@@ -67,7 +67,7 @@ class ExpenseManager:
                 startDay = startDay + datetime.timedelta(days=7)
                 endDay = endDay + datetime.timedelta(days=7)
             
-        weekRange = self.getSheet_timeFormat(startDay) + " - " + self.getSheet_timeFormat(endDay)
+        weekRange = getSheet_timeFormat(startDay, self.time_format) + " - " + getSheet_timeFormat(endDay, self.time_format)
         self.worksheet.update_cell(dateCell.row,colLength, weekRange)
     
 
