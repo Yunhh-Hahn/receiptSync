@@ -86,6 +86,13 @@ if (isNextWeek() == True):
 insertReceipt(worksheet= worksheet, receiptTotal= receiptTotal)
 
 
+class Receipt:
+    def __init__(self, total) -> None:
+        self.total = total
+    def __repr__(self) -> str:
+        return(f"Receipt(total={self.total})")
 
 
-
+class ExpenseSheet():
+    def __init__(self) -> None:
+        pass
